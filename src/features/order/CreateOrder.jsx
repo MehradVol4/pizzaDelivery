@@ -1,4 +1,4 @@
-
+/* eslint-disable react-refresh/only-export-components */
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
@@ -109,23 +109,17 @@ export async function action({ request }) {
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === 'on',
+    priority: data.priority === "on",
   };
 
+  const errors = {};
 
-  const errors = {
-
-  };
-
-  if (!isValidPhone(order.phone)) errors.phone = 'number is not correct';
+  if (!isValidPhone(order.phone)) errors.phone = "number is not correct";
   if (Object.keys(errors).length > 0) return errors;
 
+  const newOrder = await createOrder(order);
 
-  // const newOrder = await createOrder(order);
-
-  // return redirect(`/order/${newOrder.id}`);
-  return null;
+  return redirect(`/order/${newOrder.id}`);
 }
-
 
 export default CreateOrder;

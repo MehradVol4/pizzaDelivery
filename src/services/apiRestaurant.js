@@ -28,11 +28,11 @@ export async function createOrder(newOrder) {
       },
     });
 
-    if (!res.ok) throw Error();
+    if (!res.ok) throw new Error(`Failed creating order (${res.status})`);
     const { data } = await res.json();
     return data;
-  } catch {
-    throw Error('Failed creating your order');
+  } catch (err) {
+    throw new Error('Failed creating your order', { cause: err });
   }
 }
 
@@ -46,9 +46,9 @@ export async function updateOrder(id, updateObj) {
       },
     });
 
-    if (!res.ok) throw Error();
+    if (!res.ok) throw new Error(`Failed updating order (${res.status})`);
     // We don't need the data, so we don't return anything
   } catch (err) {
-    throw Error('Failed updating your order');
+    throw new Error('Failed updating your order', { cause: err });
   }
 }

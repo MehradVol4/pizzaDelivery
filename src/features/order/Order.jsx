@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // Test ID: IIDSAT
 import OrderItem from "./OrderItem";
 import { useLoaderData } from "react-router-dom";
@@ -38,7 +39,7 @@ function Order() {
       <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 py-5 px-6">
         <p className="font-medium ">
           {deliveryIn >= 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😀`
             : "Order should have arrived"}
         </p>
         <p className="text-xs text-stone-500">(Estimated delivery: {formatDate(estimatedDelivery)})</p>
