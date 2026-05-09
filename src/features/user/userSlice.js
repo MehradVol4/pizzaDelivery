@@ -1,42 +1,59 @@
-// import { getAddress } from "../../services/apiGeocoding";
+import { getAddress } from "../../services/apiGeocoding";
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// function getPosition() {
-//   return new Promise(function (resolve, reject) {
-//     navigator.geolocation.getCurrentPosition(resolve, reject);
-//   });
-// }
+function getPosition() {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+}
 
-// export async function fetchAddress() {
-//   // 1) We get the user's geolocation position
-//   const positionObj = await getPosition();
-//   const position = {
-//     latitude: positionObj.coords.latitude,
-//     longitude: positionObj.coords.longitude,
-//   };
 
-//   // 2) Then we use a reverse geocoding API to get a description of the user's address, so we can display it the order form, so that the user can correct it if wrong
-//   const addressObj = await getAddress(position);
-//   const address = `${addressObj?.locality}, ${addressObj?.city} ${addressObj?.postcode}, ${addressObj?.countryName}`;
+export const fetchAddress = createAsyncThunk('user/fetchAdress', async function () {
+  const positionObj = await getPosition();
+  const position = {
+    latitude: positionObj.coords.latitude,
+    longitude: positionObj.coords.longitude,
+  };
 
-//   // 3) Then we return an object with the data that we are interested in
-//   return { position, address };
-// }
+
+  const addressObj = await getAddress(position);
+  const address = `${addressObj?.locality}, ${addressObj?.city} ${addressObj?.postcode}, ${addressObj?.countryName}`;
+
+
+  return { position, address };
+})
+
 
 const initialState = {
-  username: 'Mehradkhd' ,
-} ;
+  username: 'Mehradkhd',
+  status: 'idle',
+  position: {},
+  address: '',
+  error: '',
+};
 
 const userSlice = createSlice({
-  name:"user",
+  name: "user",
   initialState,
-  reducers:{
-    updateName(state,action) {
-      state.username = action.payload ;
-    }
-  }
-}) ;
+  reducers: {
+    updateName(state, action) {
+      state.username = action.payload;
+    },
+  },
+  extraReducers: (builder) => builder.addCase(fetchAddress.pending,
+    (state) => { state.status = 'loading'; })
+    .addCase(fetchAddress.fulfilled, (state, action) => {
+      state.position = action.payload.position;
+      state.address = action.payload.address;
+      state.status = 'idle';
+    })
+    .addCase(fetchAddress.rejected, (state) => {
+      state.status = 'error';
+      state.error = 'there was an error getting your address';
 
-export const {updateName} = userSlice.actions ;
-export default userSlice.reducer ; 
+    })
+});
+
+export const { updateName } = userSlice.actions;
+export default userSlice.reducer; 

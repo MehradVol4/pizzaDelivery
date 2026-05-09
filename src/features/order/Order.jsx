@@ -1,18 +1,28 @@
 /* eslint-disable react-refresh/only-export-components */
 // Test ID: IIDSAT
 import OrderItem from "./OrderItem";
-import { useLoaderData } from "react-router-dom";
+import { useFetcher, useLoaderData } from "react-router-dom";
 import { getOrder } from "../../services/apiRestaurant";
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
+import { useEffect } from "react";
+import UpdateOrder from "./UpdateOrder";
 
 
 
 function Order() {
   const order = useLoaderData();
+
+  const fetcher = useFetcher();
+
+  useEffect(function () {
+    if (!fetcher.data && fetcher.state === 'idle')
+      fetcher.load('/menu')
+  }, [fetcher]);
+
   const {
     id,
     status,
@@ -45,13 +55,22 @@ function Order() {
         <p className="text-xs text-stone-500">(Estimated delivery: {formatDate(estimatedDelivery)})</p>
       </div>
       <ul className="divide-y divide-stone-200 border-b border-t">
-        {cart.map((item) => <OrderItem item={item} key={item.id} />)}
+        {cart.map((item) => <OrderItem
+          item={item}
+          key={item.pizzaId}
+          ingredients={fetcher?.data?.find((el) => el.id === item.pizzaId)?.ingredients ?? []}
+          isLoadingIngredients={fetcher.state === 'loading'}
+        />)}
       </ul>
       <div className="space-y-2 bg-stone-200 py-5 px-6">
         <p className="text-sm font-medium text-stone-600">Price pizza: {formatCurrency(orderPrice)}</p>
         {priority && <p className="text-sm font-medium text-stone-600">Price priority: {formatCurrency(priorityPrice)}</p>}
         <p className="font-bold">To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}</p>
       </div>
+
+          {!priority && <UpdateOrder order={order}/>}
+
+
     </div>
   );
 }
