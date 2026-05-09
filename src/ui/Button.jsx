@@ -5,7 +5,7 @@ function Button({ children, disabled, to, type, onClick }) {
     const styles = {
         primary: base + "px-4 py-3 md:px-6 md:py-4",
         small: base + "py-2 px-4 md:px-5 md:py-2.5 text-xs",
-        secondary: "inline-block text-sm rounded-full bg-transparent font-semibold uppercasse tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:ring focus:ring-yelllow-300 focus:ring-offset-2 disable:cursor-not-allowed border-2 border-stone-300 px-4 py-3 md:px-6 md:py-6"
+        secondary: "inline-block text-sm rounded-xl bg-transparent font-semibold uppercasse tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:ring focus:ring-yelllow-300 focus:ring-offset-2 disable:cursor-not-allowed border-2 border-stone-300 px-4 py-3 md:px-6 md:py-4"
     }
     if (to) return (
         <Link
