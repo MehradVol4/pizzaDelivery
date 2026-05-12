@@ -1,13 +1,13 @@
-import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
-import tailwindcss from "@tailwindcss/vite"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    tailwindcss(),
-    react(),
-    babel({ presets: [reactCompilerPreset()] })
-  ],
-})
+  cacheDir: ".vite-cache",
+  plugins: [react()],
+  build: {
+    // In some Windows environments, deleting files in the output directory can fail with EPERM
+    // (locked/ACL-restricted files). Skipping the pre-build empty step avoids hard failure.
+    emptyOutDir: false,
+  },
+});

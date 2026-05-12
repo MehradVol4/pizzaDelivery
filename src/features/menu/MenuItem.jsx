@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addItem, getCurrentQuantityById } from "../cart/cartSlice";
 import DeleteItem from "../cart/DeleteItem";
 import UpdateItemQuantity from "../cart/UpdateItemQuantity";
+import FavoriteButton from "./FavoriteButton";
 function MenuItem({ pizza }) {
   const { id, name, unitPrice, ingredients = [], soldOut, imageUrl } = pizza;
   const dispatch = useDispatch();
@@ -22,20 +23,54 @@ function MenuItem({ pizza }) {
     dispatch(addItem(newItem))
   };
   return (
-    <li className="flex gap-4 py-2">
-      <img src={imageUrl} alt={name} className={`h-24 ${soldOut ? 'opacity-70 grayscale' : ''}`} />
-      <div className="flex flex-col grow pt-0.5">
-        <p className="font-medium">{name}</p>
-        <p className="font-sm italic text-stone-500 capitalize">{ingredients.join(", ")}</p>
-        <div className="mt-auto flex items-center justify-between">
-          {isInCart &&
-            (<div className="flex items-center gap-3 sm:gap-8">
+    <li className="flex gap-4 p-3 sm:p-4">
+      <div className="relative">
+        <img
+          src={imageUrl}
+          alt={name}
+          className={`h-24 w-24 rounded-2xl object-cover sm:h-28 sm:w-28 ${soldOut ? "opacity-70 grayscale" : ""}`}
+          loading="lazy"
+        />
+        {soldOut && (
+          <span className="absolute left-2 top-2 rounded-full bg-stone-950/70 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">
+            Sold out
+          </span>
+        )}
+      </div>
+
+      <div className="flex grow flex-col gap-2 pt-0.5">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-extrabold text-stone-900 dark:text-stone-50 sm:text-base">
+              {name}
+            </p>
+            <p className="muted mt-0.5 text-xs italic capitalize sm:text-sm">
+              {ingredients.join(", ")}
+            </p>
+          </div>
+          <FavoriteButton pizzaId={id} size="sm" />
+        </div>
+
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
+          {isInCart && (
+            <div className="flex items-center gap-3 sm:gap-6">
               <UpdateItemQuantity pizzaId={id} currentQuantity={currentQuantity} />
               <DeleteItem pizzaId={id} />
-            </div>)
-          }
-          {!soldOut ? <p className="text-sm">{formatCurrency(unitPrice)}</p> : <p className="text-sm uppercase font-medium text-stone-500 ">Sold out</p>}
-          {!soldOut && !isInCart && <Button type="small" onClick={handleAddToCart}>Add to Cart</Button>}
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            {!soldOut && (
+              <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+                {formatCurrency(unitPrice)}
+              </p>
+            )}
+            {!soldOut && !isInCart && (
+              <Button type="small" onClick={handleAddToCart}>
+                Add to cart
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </li>

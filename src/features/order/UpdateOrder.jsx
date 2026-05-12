@@ -1,7 +1,7 @@
 import { useFetcher } from "react-router-dom";
 import Button from "../../ui/Button";
 
-function UpdateOrder({ order }) {
+function UpdateOrder() {
 
     const fetcher = useFetcher();
 
@@ -15,9 +15,3 @@ function UpdateOrder({ order }) {
 }
 
 export default UpdateOrder
-
-export async function action({ request, params }) {
-    const data = { priority: true };
-    await updateOrder(params.order.id, data);
-    return null ;
-};

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
 import EmptyCart from "../cart/EmptyCart";
 import store from "../../store";
-import formartCurrency from "../../utils/helpers";
+import { formatCurrency } from "../../utils/helpers";
 import { useState } from "react";
 import { fetchAddress } from "../user/userSlice";
 
@@ -95,7 +95,7 @@ function CreateOrder() {
             {addressStatus === 'error' && <p className="text-xs mt-2 text-red-700 bg-red-100 p-2 rounded-md ">{errorAddress}</p>}
           </div>
 
-          {!position.latitude && !position.longtitude && (<span className="absolute right-0.75 z-50 top-0.75">
+          {!position.latitude && !position.longitude && (<span className="absolute right-0.75 z-50 top-0.75">
             <Button
               disabled={isLoadingAddress}
               type="small"
@@ -127,14 +127,14 @@ function CreateOrder() {
           <input
             type="hidden"
             name="position"
-            value={position.longtitude && position.latitude ?
-              `${position.latitude},${position.longtitude}`
+            value={position.longitude && position.latitude ?
+              `${position.latitude},${position.longitude}`
               : ''}
           />
           <Button
             type="primary"
             disabled={isSubmitting || isLoadingAddress}>
-            {isSubmitting ? 'placing order' : `order now from ${formartCurrency(totalPrice)}`}
+            {isSubmitting ? 'placing order' : `order now from ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>

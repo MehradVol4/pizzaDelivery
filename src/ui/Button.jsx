@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom"
 
 function Button({ children, disabled, to, type, onClick }) {
-    const base = "bg-yellow-400 text-sm uppercase font-semibold text-stone-800 inline-block tracking-wide rounded-xl hover:bg-yellow-300 cursor-pointer transition-all focus:outline-none disabled:cursor-not-allowed ";
+    const base =
+        "inline-flex items-center justify-center gap-2 rounded-2xl text-sm font-semibold uppercase tracking-wide transition-colors focus:outline-none focus:ring-4 focus:ring-brand-400/40 disabled:cursor-not-allowed disabled:opacity-60";
     const styles = {
-        primary: base + "px-4 py-3 md:px-6 md:py-4",
-        small: base + "py-2 px-4 md:px-5 md:py-2.5 text-xs",
-        secondary: "inline-block text-sm rounded-xl bg-transparent font-semibold uppercasse tracking-wide text-stone-800 transition-colors duration-300 hover:bg-yellow-300 focus:bg-yellow-300 focus:ring focus:ring-yelllow-300 focus:ring-offset-2 disable:cursor-not-allowed border-2 border-stone-300 px-4 py-3 md:px-6 md:py-4",
-        round: base + "py-1 px-2.5 md:px-3.5 md:py-2 text-sm" ,
+        primary: base + " bg-brand-400 px-4 py-3 text-stone-950 hover:bg-brand-300 md:px-6 md:py-4",
+        small: base + " bg-brand-400 px-4 py-2 text-xs text-stone-950 hover:bg-brand-300 md:px-5 md:py-2.5",
+        secondary:
+            base +
+            " border border-stone-300 bg-white/60 px-4 py-3 text-stone-800 hover:bg-white md:px-6 md:py-4 dark:border-stone-700 dark:bg-stone-950/40 dark:text-stone-100 dark:hover:bg-stone-950/55",
+        round: base + " bg-brand-400 px-2.5 py-1 text-sm text-stone-950 hover:bg-brand-300 md:px-3.5 md:py-2",
     }
     if (to) return (
         <Link
@@ -16,21 +19,9 @@ function Button({ children, disabled, to, type, onClick }) {
         </Link>
     );
 
-    if (onClick)
-        return (
-            <button
-                onClick={onClick}
-                to={to}
-                disabled={disabled}
-                className={styles[type]}>
-                {children}
-            </button>
-        );
-
-
     return (
         <button
-            to={to}
+            onClick={onClick}
             disabled={disabled}
             className={styles[type]}>
             {children}
