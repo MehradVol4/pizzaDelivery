@@ -1,5 +1,7 @@
-import { useSelector } from "react-redux";
-import CreateUser from "../features/user/CreateUser";
+import { useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { updateName } from "../features/user/userSlice";
 import Button from "./Button";
 
 const PIZZA_PHOTOS = [
@@ -9,37 +11,75 @@ const PIZZA_PHOTOS = [
 ];
 
 function Home() {
-
   const username = useSelector((state) => state.user.username);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [nameInput, setNameInput] = useState(() => username);
+  const [touched, setTouched] = useState(false);
+
+  const normalizedName = useMemo(() => nameInput.trim().replace(/\s+/g, " "), [nameInput]);
+  const canContinue = normalizedName.length >= 2;
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTouched(true);
+    if (!canContinue) return;
+    dispatch(updateName(normalizedName));
+    navigate("/menu");
+  }
 
   return (
     <div className="mx-auto grid max-w-5xl items-center gap-8 py-6 md:grid-cols-2 md:py-10">
-      <div className="card p-6 sm:p-8">
-        <h1 className="text-2xl font-extrabold leading-tight text-stone-900 dark:text-stone-50 md:text-4xl">
-          The best pizza.
-          <br />
-          <span className="text-brand-600 dark:text-brand-300">
-            Straight out of the oven, straight to you.
-          </span>
-        </h1>
+      <div className="card relative overflow-hidden p-6 sm:p-8">
+        <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-brand-400/20 blur-2xl" />
+        <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-amber-400/20 blur-2xl" />
 
-        <p className="muted mt-4 text-sm leading-relaxed md:text-base">
-          Fresh dough, real ingredients, and delivery that actually shows up on time.
-        </p>
+        <div className="relative">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <span className="chip">🔥 Hot & fresh</span>
+            <span className="chip">⏱ 25–35 min delivery</span>
+            <span className="chip">⭐ Top rated</span>
+          </div>
 
-        <div className="mt-8">
-          {username === "" ? (
-            <CreateUser />
-          ) : (
-            <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <Button to="/menu" type="primary">
-                Order now
-              </Button>
-              <Button to="/order/new" type="secondary">
-                Quick checkout
-              </Button>
+          <h1 className="text-2xl font-extrabold leading-tight text-stone-900 dark:text-stone-50 md:text-4xl">
+            Crave-worthy pizza,
+            <br />
+            <span className="text-brand-700 dark:text-brand-300">delivered fast.</span>
+          </h1>
+
+          <p className="muted mt-4 text-sm leading-relaxed md:text-base">
+            Enter your name to start ordering. We use it for your order and receipt.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-7 space-y-3">
+            <div>
+              <label className="mb-2 block text-xs font-extrabold uppercase tracking-widest text-stone-700 dark:text-stone-200">
+                Your name
+              </label>
+              <input
+                className={`input ${touched && !canContinue ? "border-red-400 focus:ring-red-300/40" : ""}`}
+                type="text"
+                autoComplete="name"
+                placeholder="e.g. Alex Johnson"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onBlur={() => setTouched(true)}
+              />
+              {touched && !canContinue && (
+                <p className="mt-2 text-xs font-semibold text-red-600 dark:text-red-300">
+                  Please enter at least 2 characters to continue.
+                </p>
+              )}
             </div>
-          )}
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button type="primary" disabled={!canContinue}>
+                Start ordering
+              </Button>
+              <span className="muted text-xs">{username ? `Saved as: ${username}` : "No account needed."}</span>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -84,10 +124,6 @@ function Home() {
               <div className="pointer-events-none absolute inset-0 ring-1 ring-black/5 dark:ring-white/10" />
             </div>
           </div>
-
-          <p className="muted mt-4 text-xs">
-            Photos from Unsplash (hotlinked); swap to local assets for production deployments.
-          </p>
         </div>
       </div>
     </div>

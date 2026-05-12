@@ -26,7 +26,7 @@ export const fetchAddress = createAsyncThunk('user/fetchAdress', async function 
 
 
 const initialState = {
-  username: 'Mehradkhd',
+  username: '',
   status: 'idle',
   position: {},
   address: '',
