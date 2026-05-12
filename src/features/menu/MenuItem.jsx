@@ -5,11 +5,13 @@ import { addItem, getCurrentQuantityById } from "../cart/cartSlice";
 import DeleteItem from "../cart/DeleteItem";
 import UpdateItemQuantity from "../cart/UpdateItemQuantity";
 import FavoriteButton from "./FavoriteButton";
+import { getPizzaFallbackDataUrl } from "../../utils/pizzaImage";
 function MenuItem({ pizza }) {
   const { id, name, unitPrice, ingredients = [], soldOut, imageUrl } = pizza;
   const dispatch = useDispatch();
   const currentQuantity = useSelector(getCurrentQuantityById(id));
   const isInCart = currentQuantity > 0;
+  const fallbackSrc = getPizzaFallbackDataUrl(name);
 
   function handleAddToCart() {
 
@@ -26,10 +28,15 @@ function MenuItem({ pizza }) {
     <li className="flex gap-4 p-3 sm:p-4">
       <div className="relative">
         <img
-          src={imageUrl}
+          src={imageUrl || fallbackSrc}
           alt={name}
           className={`h-24 w-24 rounded-2xl object-cover sm:h-28 sm:w-28 ${soldOut ? "opacity-70 grayscale" : ""}`}
           loading="lazy"
+          onError={(e) => {
+            if (e.currentTarget.dataset.fallbackApplied) return;
+            e.currentTarget.dataset.fallbackApplied = "1";
+            e.currentTarget.src = fallbackSrc;
+          }}
         />
         {soldOut && (
           <span className="absolute left-2 top-2 rounded-full bg-stone-950/70 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-white">
